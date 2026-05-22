@@ -1,9 +1,9 @@
 package atividade_extensionista.projeto_ambiental.dto;
 
+import atividade_extensionista.projeto_ambiental.model.Ocorrencia;
+import atividade_extensionista.projeto_ambiental.model.StatusOcorrencia;
+import atividade_extensionista.projeto_ambiental.model.TipoDano;
 import org.hibernate.validator.constraints.URL;
-import projeto_ambiental.atividade_extensionista.model.Ocorrencia;
-import projeto_ambiental.atividade_extensionista.model.StatusOcorrencia;
-import projeto_ambiental.atividade_extensionista.model.TipoDano;
 
 import java.time.LocalDateTime;
 

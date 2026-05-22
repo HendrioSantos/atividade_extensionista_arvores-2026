@@ -12,8 +12,8 @@ public class GeocodingService {
     private final ObjectMapper objectMapper;
 
     public GeocodingService(WebClient.Builder webClientBuilder) {
-        // Inicializa o cliente HTTP apontando para o servidor gratuito do OpenStreetMap
-        this.webClient = webClientBuilder.baseUrl("https://openstreetmap.org").build();
+        // CORRIGIDO: Aponta para o servidor de buscas Nominatim
+        this.webClient = webClientBuilder.baseUrl("https://nominatim.openstreetmap.org").build();
         this.objectMapper = new ObjectMapper();
     }
 

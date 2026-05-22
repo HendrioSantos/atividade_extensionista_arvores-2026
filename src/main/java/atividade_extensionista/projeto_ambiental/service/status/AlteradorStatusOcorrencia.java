@@ -1,8 +1,8 @@
 package atividade_extensionista.projeto_ambiental.service.status;
 
+import atividade_extensionista.projeto_ambiental.model.Ocorrencia;
+import atividade_extensionista.projeto_ambiental.model.StatusOcorrencia;
 import org.springframework.stereotype.Component;
-import projeto_ambiental.atividade_extensionista.model.Ocorrencia;
-import projeto_ambiental.atividade_extensionista.model.StatusOcorrencia;
 
 @Component
 public class AlteradorStatusOcorrencia implements AlteradorStatus{

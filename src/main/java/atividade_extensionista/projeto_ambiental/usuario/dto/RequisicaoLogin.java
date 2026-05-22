@@ -1,4 +1,4 @@
-package atividade_extensionista.projeto_ambiental.usuario;
+package atividade_extensionista.projeto_ambiental.usuario.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

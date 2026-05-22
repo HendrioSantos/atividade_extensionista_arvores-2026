@@ -1,7 +1,7 @@
 package atividade_extensionista.projeto_ambiental.repository;
 
+import atividade_extensionista.projeto_ambiental.model.Ocorrencia;
 import org.springframework.data.jpa.repository.JpaRepository;
-import projeto_ambiental.atividade_extensionista.model.Ocorrencia;
 
 public interface OcorrenciaRepository extends JpaRepository<Ocorrencia, Long> {
 }

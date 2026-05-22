@@ -1,13 +1,17 @@
 package atividade_extensionista.projeto_ambiental.service;
 
+import atividade_extensionista.projeto_ambiental.dto.OcorrenciaRegistrar;
+import atividade_extensionista.projeto_ambiental.infra.exception.InvalidoException;
+import atividade_extensionista.projeto_ambiental.model.Ocorrencia;
+import atividade_extensionista.projeto_ambiental.model.StatusOcorrencia;
+import atividade_extensionista.projeto_ambiental.repository.OcorrenciaRepository;
+import atividade_extensionista.projeto_ambiental.service.status.AlteradorStatusOcorrencia;
+import atividade_extensionista.projeto_ambiental.usuario.model.Usuario;
+import atividade_extensionista.projeto_ambiental.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import projeto_ambiental.atividade_extensionista.dto.OcorrenciaRegistrar;
-import projeto_ambiental.atividade_extensionista.model.Ocorrencia;
-import projeto_ambiental.atividade_extensionista.model.StatusOcorrencia;
-import projeto_ambiental.atividade_extensionista.repository.OcorrenciaRepository;
-import projeto_ambiental.atividade_extensionista.service.status.AlteradorStatusOcorrencia;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,6 +26,8 @@ import java.util.List;
 public class OcorrenciaService {
 
     private final OcorrenciaRepository repository;
+    private final UsuarioRepository usuarioRepository;
+    private final Usuario usuario;
     private final AlteradorStatusOcorrencia alteradorStatus;
     private final GeocodingService service;
     // Modifique o início da sua OcorrenciaService para usar o caminho relativo geral
@@ -62,6 +68,11 @@ public class OcorrenciaService {
         // 4. REGRA DE NEGÓCIO: Gera o slug automaticamente baseado no tipo e data atual
         String slugGerado = gerarSlug(dto.tipoDano().toString());
 
+        Usuario autor = (Usuario) usuarioRepository.findByLogin(usuario.getLogin());
+        if (autor == null){
+            throw new InvalidoException("Usuário não encontrado pelo login", HttpStatus.NOT_FOUND);
+        }
+
         // 5. Constrói a entidade unificando todos os dados tratados
         Ocorrencia novaOcorrencia = Ocorrencia.builder()
                 .tipoDano(dto.tipoDano())
@@ -71,6 +82,7 @@ public class OcorrenciaService {
                 .slug(slugGerado)
                 .urlFoto(arquivoPath.toString()) // O caminho salvo no banco refletirá a pasta do Enum
                 .endereco(dto.endereco())
+                .usuario(autor)
                 .build();
 
         return repository.save(novaOcorrencia);

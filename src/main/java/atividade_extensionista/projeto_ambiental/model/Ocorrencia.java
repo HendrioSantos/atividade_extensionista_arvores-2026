@@ -1,5 +1,6 @@
 package atividade_extensionista.projeto_ambiental.model;
 
+import atividade_extensionista.projeto_ambiental.usuario.model.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -45,5 +46,9 @@ public class Ocorrencia {
     @Enumerated(EnumType.STRING)
     private StatusOcorrencia statusOcorrencia = StatusOcorrencia.PENDENTE;
     private String slug;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
 
 }

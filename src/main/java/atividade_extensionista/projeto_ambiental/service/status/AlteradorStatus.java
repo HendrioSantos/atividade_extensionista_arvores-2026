@@ -1,7 +1,8 @@
 package atividade_extensionista.projeto_ambiental.service.status;
 
-import projeto_ambiental.atividade_extensionista.model.Ocorrencia;
-import projeto_ambiental.atividade_extensionista.model.StatusOcorrencia;
+
+import atividade_extensionista.projeto_ambiental.model.Ocorrencia;
+import atividade_extensionista.projeto_ambiental.model.StatusOcorrencia;
 
 public interface AlteradorStatus {
     void alterarStatus(Ocorrencia ocorrencia, StatusOcorrencia status);

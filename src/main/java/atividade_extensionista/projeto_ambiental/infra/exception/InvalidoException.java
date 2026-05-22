@@ -12,7 +12,7 @@ public class InvalidoException extends RuntimeException {
         super(mensagem);
     }
 
-    public InvalidoException(HttpStatus status, String mensagem) {
+    public InvalidoException(String mensagem, HttpStatus status) {
         super(mensagem);
         this.status = status;
     }

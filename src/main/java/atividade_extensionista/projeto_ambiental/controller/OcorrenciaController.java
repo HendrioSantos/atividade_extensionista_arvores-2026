@@ -1,15 +1,16 @@
 package atividade_extensionista.projeto_ambiental.controller;
 
+
+import atividade_extensionista.projeto_ambiental.dto.OcorrenciaRegistrar;
+import atividade_extensionista.projeto_ambiental.model.Ocorrencia;
+import atividade_extensionista.projeto_ambiental.model.StatusOcorrencia;
+import atividade_extensionista.projeto_ambiental.service.OcorrenciaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import projeto_ambiental.atividade_extensionista.dto.OcorrenciaRegistrar;
-import projeto_ambiental.atividade_extensionista.model.Ocorrencia;
-import projeto_ambiental.atividade_extensionista.model.StatusOcorrencia;
-import projeto_ambiental.atividade_extensionista.service.OcorrenciaService;
 
 import java.io.IOException;
 import java.util.List;
