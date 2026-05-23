@@ -10,6 +10,7 @@ import atividade_extensionista.projeto_ambiental.usuario.model.Usuario;
 import atividade_extensionista.projeto_ambiental.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,7 +31,6 @@ public class OcorrenciaService {
     private final Usuario usuario;
     private final AlteradorStatusOcorrencia alteradorStatus;
     private final GeocodingService service;
-    // Modifique o início da sua OcorrenciaService para usar o caminho relativo geral
     private final String uploadDirBase = "uploads/fotos/";
 
     public Ocorrencia registrarOcorrencia(OcorrenciaRegistrar dto, MultipartFile foto) throws IOException {
@@ -68,9 +68,11 @@ public class OcorrenciaService {
         // 4. REGRA DE NEGÓCIO: Gera o slug automaticamente baseado no tipo e data atual
         String slugGerado = gerarSlug(dto.tipoDano().toString());
 
-        Usuario autor = (Usuario) usuarioRepository.findByLogin(usuario.getLogin());
+        Usuario autor = (Usuario) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
         if (autor == null){
-            throw new InvalidoException("Usuário não encontrado pelo login", HttpStatus.NOT_FOUND);
+            throw new InvalidoException("Sessão invalida ou expirada", HttpStatus.UNAUTHORIZED);
         }
 
         // 5. Constrói a entidade unificando todos os dados tratados
