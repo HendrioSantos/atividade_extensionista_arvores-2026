@@ -6,6 +6,7 @@ import atividade_extensionista.projeto_ambiental.usuario.model.Usuario;
 import atividade_extensionista.projeto_ambiental.usuario.service.GuestService;
 import atividade_extensionista.projeto_ambiental.usuario.service.UsuarioService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,19 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/autenticacao")
+@RequiredArgsConstructor
 public class AutenticacaoController {
 
-    private AuthenticationManager manager;
-    private TokenService tokenService;
-    private UsuarioService usuarioService;
-    private GuestService guestService;
-
-    public AutenticacaoController(AuthenticationManager manager, TokenService tokenService, UsuarioService usuarioService, GuestService guestService) {
-        this.manager = manager;
-        this.tokenService = tokenService;
-        this.usuarioService = usuarioService;
-        this.guestService = guestService;
-    }
+    private final AuthenticationManager manager;
+    private final TokenService tokenService;
+    private final UsuarioService usuarioService;
+    private final GuestService guestService;
 
     @PostMapping("/login")
     public ResponseEntity<DadosLoginResposta> efetuarLogin(@RequestBody DadosAutenticacao dados) {
@@ -49,12 +44,8 @@ public class AutenticacaoController {
     }
 
     @PostMapping("/registro")
-    public ResponseEntity<Usuario> registrar(@RequestBody @Valid DadosCadastroUsuario dados, Authentication authentication) {
-        // Verifica se já existe login igual
-        var usuarioLogado = (Usuario) authentication.getPrincipal();
-
+    public ResponseEntity<Usuario> registrar(@RequestBody @Valid DadosCadastroUsuario dados) {
         var resposta = usuarioService.registrarUsuario(dados);
-
         return ResponseEntity.ok(resposta);
     }
 

@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.URL;
 import java.time.LocalDateTime;
 
 public record OcorrenciaRegistrar(
+        String nome,
         TipoDano tipoDano,
         Double latitude,
         Double longitude,
@@ -21,10 +22,11 @@ public record OcorrenciaRegistrar(
 ) {
     public OcorrenciaRegistrar(Ocorrencia ocorrencia) {
         this(
+                ocorrencia.getNome(),
                 ocorrencia.getTipoDano(),
                 ocorrencia.getLatitude(),
                 ocorrencia.getLongitude(),
-                null,
+                ocorrencia.getEndereco(),
                 ocorrencia.getUrlFoto(),
                 ocorrencia.getDescricao(),
                 ocorrencia.getDataRegistro(),

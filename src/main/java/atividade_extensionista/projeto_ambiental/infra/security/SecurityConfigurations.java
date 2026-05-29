@@ -3,6 +3,8 @@ package atividade_extensionista.projeto_ambiental.infra.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
@@ -31,6 +33,7 @@ public class SecurityConfigurations {
 
                         // --- ENDPOINTS PÚBLICOS DE LOGIN (Não exigem Token) ---
                         .requestMatchers(HttpMethod.POST, "/autenticacao/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/autenticacao/registro").permitAll()
                         .requestMatchers(HttpMethod.POST, "/autenticacao/guest").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v3/api-docs/**", "/swagger-ui/**").permitAll()
 
@@ -43,6 +46,7 @@ public class SecurityConfigurations {
                         // --- PERMISSÕES EXCLUSIVAS DO ADMIN/FISCAL ---
                         // Mudar status de denúncias e aplicar multas exige perfil de administrador
                         .requestMatchers(HttpMethod.PATCH, "/ocorrencia/*/status").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/ocorrencia/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/financeiro/multas/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/educacao/conteudos").hasRole("ADMIN")
 
@@ -57,6 +61,11 @@ public class SecurityConfigurations {
     @Bean
     public PasswordEncoder passwordEncoder(){
         return Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean

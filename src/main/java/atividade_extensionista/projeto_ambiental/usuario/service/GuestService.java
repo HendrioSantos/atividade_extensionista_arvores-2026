@@ -16,7 +16,6 @@ public class GuestService {
     public Usuario identificarOuCadastrarGuest(GuestRequisicao dto) {
         return repository.findByIdentificadorGuest(dto.identificadorGuest())
                 .orElseGet(() -> {
-                    // Se for um dispositivo inédito, cria um perfil de Guest limpo
                     Usuario novoGuest = Usuario.builder()
                             .identificadorGuest(dto.identificadorGuest())
                             .login("guest_" + dto.identificadorGuest().substring(0, 8))

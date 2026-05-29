@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.URL;
 import java.time.LocalDateTime;
 
 public record OcorrenciaDetalhar(
+        String nome,
         TipoDano tipoDano,
         Double latitude,
         Double longitude,
@@ -16,10 +17,12 @@ public record OcorrenciaDetalhar(
         String urlFoto,
         String descricao,
         LocalDateTime dataRegistro,
-        StatusOcorrencia statusOcorrencia
+        StatusOcorrencia statusOcorrencia,
+        boolean ativo
 ) {
     public OcorrenciaDetalhar(Ocorrencia ocorrencia) {
         this(
+                ocorrencia.getNome(),
                 ocorrencia.getTipoDano(),
                 ocorrencia.getLatitude(),
                 ocorrencia.getLongitude(),
@@ -27,7 +30,8 @@ public record OcorrenciaDetalhar(
                 ocorrencia.getUrlFoto(),
                 ocorrencia.getDescricao(),
                 ocorrencia.getDataRegistro(),
-                ocorrencia.getStatusOcorrencia()
+                ocorrencia.getStatusOcorrencia(),
+                ocorrencia.isAtivo()
         );
     }
 }

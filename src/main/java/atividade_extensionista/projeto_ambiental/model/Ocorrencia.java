@@ -21,6 +21,9 @@ public class Ocorrencia {
     private Long id;
 
     @Column(nullable = false)
+    private String nome;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TipoDano tipoDano;
 
@@ -50,5 +53,9 @@ public class Ocorrencia {
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean ativo = true;
 
 }

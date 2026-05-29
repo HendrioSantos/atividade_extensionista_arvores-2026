@@ -1,20 +1,20 @@
 package atividade_extensionista.projeto_ambiental.controller;
 
-
+import atividade_extensionista.projeto_ambiental.dto.OcorrenciaListar;
 import atividade_extensionista.projeto_ambiental.dto.OcorrenciaRegistrar;
-import atividade_extensionista.projeto_ambiental.model.Ocorrencia;
 import atividade_extensionista.projeto_ambiental.model.StatusOcorrencia;
 import atividade_extensionista.projeto_ambiental.service.OcorrenciaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/ocorrencia")
@@ -23,52 +23,37 @@ public class OcorrenciaController {
 
     private final OcorrenciaService service;
 
+    @GetMapping
+    public ResponseEntity<Page<OcorrenciaListar>> listarTodas(@PageableDefault(size = 10, sort = "nome") Pageable paginacao) {
+        return ResponseEntity.ok(service.paginarOcorrencias(paginacao));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<OcorrenciaListar> pegarSomenteUm(@PathVariable Long id) {
+        var ocorrencia = service.pegarUmSo(id);
+        return ResponseEntity.ok(new OcorrenciaListar(ocorrencia));
+    }
+
     @PostMapping(consumes = {"multipart/form-data"})
-    public ResponseEntity<OcorrenciaRegistrar> criarOcorrencia(
-            @ModelAttribute @Valid OcorrenciaRegistrar dto,
-            @RequestParam("foto") MultipartFile foto) {
+    public ResponseEntity<OcorrenciaRegistrar> criarOcorrencia(@ModelAttribute @Valid OcorrenciaRegistrar dto, @RequestParam("foto") MultipartFile foto) {
         try {
-            // Executa o serviço de salvamento físico e persistência no banco
-            Ocorrencia novaOcorrencia = service.registrarOcorrencia(dto, foto);
-
-            // Converte a entidade salva de volta para o DTO usando o construtor do Record
-            OcorrenciaRegistrar responseDTO = new OcorrenciaRegistrar(novaOcorrencia);
-
+            var novaOcorrencia = service.registrarOcorrencia(dto, foto);
+            var responseDTO = new OcorrenciaRegistrar(novaOcorrencia);
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
         } catch (IOException e) {
-            // Caso ocorra falha na gravação do arquivo físico no servidor
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    /**
-     * Endpoint público para listar todas as ocorrências registradas.
-     * Retorna uma lista de DTOs para blindar a entidade de banco de dados.
-     */
-    @GetMapping
-    public ResponseEntity<List<OcorrenciaRegistrar>> listarTodas() {
-        List<OcorrenciaRegistrar> listaDTOs = service.listarTodas().stream()
-                .map(OcorrenciaRegistrar::new) // Converte cada Ocorrencia em OcorrenciaRegistrar DTO
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(listaDTOs);
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<OcorrenciaRegistrar> atualizarStatusAdmin(@PathVariable Long id, @RequestParam("novoStatus") StatusOcorrencia novoStatus) {
+        return ResponseEntity.ok(new OcorrenciaRegistrar(service.atualizarStatus(id, novoStatus)));
     }
 
-    /**
-     * Endpoint para uso exclusivo do Administrador/Fiscal.
-     * Altera o status de uma ocorrência específica.
-     * Rota de acesso: PATCH http://localhost:8080/ocorrencias/{id}/status?novoStatus=EM_ANALISE
-     */
-    @PatchMapping("/{id}/status")
-    public ResponseEntity<OcorrenciaRegistrar> atualizarStatusAdmin(
-            @PathVariable Long id,
-            @RequestParam("novoStatus") StatusOcorrencia novoStatus) {
-
-        // Executa a alteração através da service que invoca o padrão de projeto SOLID
-        Ocorrencia ocorrenciaAtualizada = service.atualizarStatus(id, novoStatus);
-
-        // Devolve o DTO atualizado
-        return ResponseEntity.ok(new OcorrenciaRegistrar(ocorrenciaAtualizada));
+    @DeleteMapping("/{id}/{logico}")
+    public ResponseEntity<Void> deletarOcorrencia(@PathVariable Long id, @PathVariable boolean logico) {
+        service.processarExclusao(id, logico);
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.URL;
 import java.time.LocalDateTime;
 
 public record OcorrenciaAtualizar(
+        String nome,
         TipoDano tipoDano,
         Double latitude,
         Double longitude,
@@ -20,6 +21,7 @@ public record OcorrenciaAtualizar(
 ) {
     public OcorrenciaAtualizar(Ocorrencia ocorrencia) {
         this(
+                ocorrencia.getNome(),
                 ocorrencia.getTipoDano(),
                 ocorrencia.getLatitude(),
                 ocorrencia.getLongitude(),

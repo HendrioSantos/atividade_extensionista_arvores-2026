@@ -1,0 +1,1 @@
+ALTER TABLE ocorrencias ADD COLUMN nome VARCHAR(255);

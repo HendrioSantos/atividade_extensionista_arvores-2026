@@ -16,9 +16,15 @@ import java.util.List;
 @RestControllerAdvice
 public class TratadorGlobalException {
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<DadosErroSimples> tratarErroArgumentoIlegal(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new DadosErroSimples(ex.getMessage(), LocalDateTime.now()));
+    }
+
     @ExceptionHandler(InvalidoException.class)
     public ResponseEntity<DadosErroSimples> tratarRegraDeNegocio(InvalidoException ex) {
-        return ResponseEntity.status(ex.getStatus())
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new DadosErroSimples(ex.getMessage(), LocalDateTime.now()));
     }
 

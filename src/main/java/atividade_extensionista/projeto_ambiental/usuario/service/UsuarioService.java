@@ -18,8 +18,8 @@ import java.util.List;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
-    private final PasswordEncoder passwordEncoder; // Injeção de segurança
-    private final List<UsuarioMetodoExcluir> metodosExclusao; // Injeção do seu Strategy Pattern
+    private final PasswordEncoder passwordEncoder;
+    private final List<UsuarioMetodoExcluir> metodosExclusao;
 
     public Usuario registrarUsuario(DadosCadastroUsuario dados) {
         var usuario = buildUsuario(dados);
@@ -33,12 +33,12 @@ public class UsuarioService {
     }
 
     public void deletarUsuarioPorEstrategia(String login, boolean ehExclusaoLogica) {
-        UsuarioMetodoExcluir estrategiaCorreta = metodosExclusao.stream()
+        var excluir = metodosExclusao.stream()
                 .filter(metodo -> metodo.seAplica(ehExclusaoLogica))
                 .findFirst()
                 .orElseThrow(() -> new InvalidoException("Estratégia de exclusão não configurada.", HttpStatus.INTERNAL_SERVER_ERROR));
 
-        estrategiaCorreta.excluirUsuario(login, usuarioRepository);
+        excluir.excluirUsuario(login, usuarioRepository);
     }
 
     private Usuario buildUsuario(DadosCadastroUsuario dados) {
